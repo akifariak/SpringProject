@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.OrderDto;
+import com.example.demo.dto.ReturnDto;
 import com.example.demo.model.Cart;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Order;
@@ -12,6 +13,9 @@ import com.example.demo.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -68,6 +72,23 @@ public class OrderService {
             return null;
         }
     }
+
+    public List<ReturnDto> getOrderByCustomerName(String customerName) {
+        try {
+            List<Order> orders = orderRepository.findOrderByCustomerName(customerName);
+            if (orders.isEmpty()) {
+                System.err.println(customerName + "'s order not found.");
+                return Collections.emptyList();
+            }
+            return orders.stream()
+                    .map(ReturnDto::convert)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            System.err.println("Error while fetching orders: " + e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
 
 
 

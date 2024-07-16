@@ -13,6 +13,8 @@ import com.example.demo.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -48,6 +50,22 @@ public class CartService {
         }catch (Exception e){
             System.err.println(e.getMessage());
             return null;
+        }
+    }
+
+    public List<BigDecimal> getCartTotalPrice(String letter){
+        try {
+            List<Cart> carts = cartRepository.findCartsByProductNameContaining(letter);
+            List<BigDecimal> totalPriceList = new ArrayList<>();
+
+            carts.stream()
+                    .map(Cart::getTotalPrice)
+                    .forEach(totalPriceList::add);
+
+            return totalPriceList;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return Collections.emptyList();
         }
     }
 

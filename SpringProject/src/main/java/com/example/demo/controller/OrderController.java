@@ -2,11 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.OrderDto;
+import com.example.demo.dto.ReturnDto;
 import com.example.demo.model.Cart;
 import com.example.demo.model.Customer;
 import com.example.demo.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order/")
@@ -25,6 +28,16 @@ public class OrderController {
             return ResponseEntity.ok("Error");
         }
     }
+
+    @GetMapping("/getOrderByCustomerName")
+    public ResponseEntity<List<ReturnDto>> getOrdersByCustomerName(@RequestBody String customerName) {
+        List<ReturnDto> orders = orderService.getOrderByCustomerName(customerName);
+        if (orders.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(orders);
+    }
+
     @GetMapping("/getOrderForCode")
     public ResponseEntity<OrderDto> getOrderForCode(@RequestBody Customer customer){
         try {
